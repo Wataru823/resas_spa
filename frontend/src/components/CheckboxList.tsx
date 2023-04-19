@@ -1,13 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Prefecture } from '../types/Prefecture'
 import Checkbox from './Checkbox'
-
-type CheckboxListProps = {
-  prefectures: Prefecture[]
-  selectedPrefCodes: number[]
-  onChange: (selectedPrefCodes: number[]) => void
-}
+import { CheckboxListProps } from '../types/CheckboxListProps'
 
 const CheckboxListWrapper = styled.div`
   display: grid;
