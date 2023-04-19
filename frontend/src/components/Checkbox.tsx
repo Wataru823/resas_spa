@@ -1,12 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-
-type CheckboxProps = {
-  prefCode: number
-  prefName: string
-  checked: boolean
-  onChange: (prefCode: number, checked: boolean) => void
-}
+import { CheckboxProps } from '../types/CheckboxProps'
 
 const Container = styled.div`
   display: flex;

@@ -5,17 +5,6 @@ import PopulationGraph from './PopulationGraph'
 import { Prefecture } from '../types/Prefecture'
 import { PrefPopulation } from '../types/PrefPopulation'
 
-// type PrefPopulationData = {
-//   year: number
-//   value: number
-// }
-
-// type PrefPopulation = {
-//   prefCode: number
-//   prefName: string
-//   data: PrefPopulationData[]
-// }
-
 const Container = styled.div`
   padding: 0 20px;
   margin: 0 auto;
