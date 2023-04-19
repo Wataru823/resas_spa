@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import CheckboxList from './CheckboxList'
+import PopulationGraph from './PopulationGraph'
+import { Prefecture } from '../types/Prefecture'
+import { PrefPopulation } from '../types/PrefPopulation'
 
-type Prefecture = {
-  prefCode: number
-  prefName: string
-}
+// type PrefPopulationData = {
+//   year: number
+//   value: number
+// }
+
+// type PrefPopulation = {
+//   prefCode: number
+//   prefName: string
+//   data: PrefPopulationData[]
+// }
 
 const Container = styled.div`
   padding: 0 20px;
@@ -23,14 +32,10 @@ const SubTitle = styled.h2`
   }
 `
 
-const List = styled.ul`
-  list-style: none;
-  padding: 0;
-`
-
-const App: React.FC = () => {
+const PopulationData: React.FC = () => {
   const [selectedPrefCodes, setSelectedPrefCodes] = useState<number[]>([])
   const [prefectures, setPrefectures] = useState<Prefecture[]>([])
+  const [prefPopulation, setPrefPopulation] = useState<PrefPopulation[]>([])
 
   useEffect(() => {
     const fetchPrefectures = async () => {
@@ -48,17 +53,11 @@ const App: React.FC = () => {
     fetchPrefectures()
   }, [])
 
-  const handlePrefectureChange = (selectedPrefCodes: number[]) => {
+  const handlePrefectureChange = async (selectedPrefCodes: number[]) => {
     setSelectedPrefCodes(selectedPrefCodes)
-  }
-
-  useEffect(() => {
-    const getSelectedPrefecturesData = async () => {
-      if (selectedPrefCodes.length === 0) {
-        return
-      }
+    const promises = selectedPrefCodes.map(async (prefCode) => {
       const response = await fetch(
-        `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${selectedPrefCodes[0]}`,
+        `https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=${prefCode}`,
         {
           headers: {
             'X-API-KEY': import.meta.env.VITE_RESAS_API_KEY,
@@ -66,10 +65,19 @@ const App: React.FC = () => {
         },
       )
       const data = await response.json()
-      console.log(data)
-    }
-    getSelectedPrefecturesData()
-  }, [selectedPrefCodes])
+
+      const prefecture = prefectures.find((pref) => pref.prefCode === prefCode)
+      data.result.prefName = prefecture?.prefName
+
+      return {
+        prefCode: data.result.prefCode,
+        prefName: data.result.prefName,
+        data: data.result.data[0].data,
+      }
+    })
+    const prefPopulationData = await Promise.all(promises)
+    setPrefPopulation(prefPopulationData)
+  }
 
   return (
     <Container>
@@ -79,19 +87,10 @@ const App: React.FC = () => {
         selectedPrefCodes={selectedPrefCodes}
         onChange={handlePrefectureChange}
       />
-      <SubTitle>選択された都道府県</SubTitle>
-      <List>
-        {selectedPrefCodes.map((prefCode) => {
-          const prefecture = prefectures.find(
-            (pref) => pref.prefCode === prefCode,
-          )
-          return prefecture ? (
-            <li key={prefecture.prefCode}>{prefecture.prefName}</li>
-          ) : null
-        })}
-      </List>
+      <SubTitle>都道府県別のグラフ</SubTitle>
+      <PopulationGraph prefPopulation={prefPopulation} />
     </Container>
   )
 }
 
-export default App
+export default PopulationData
