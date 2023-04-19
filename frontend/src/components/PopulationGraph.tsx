@@ -1,31 +1,23 @@
 import React from 'react'
-import Highcharts from 'highcharts'
+import Highcharts, { SeriesOptionsType } from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
 import { PrefPopulation } from '../types/PrefPopulation'
 
-type Props = {
+interface Props {
   prefPopulation: PrefPopulation[]
 }
 
-// 選んだ都道府県の人口推移グラフを表示するコンポーネント
 const PopulationGraph: React.FC<Props> = ({ prefPopulation }) => {
-  const series: Highcharts.SeriesOptionsType[] = []
-  const categories = []
-
-  for (const p of prefPopulation) {
-    const data = []
-
-    for (const pd of p.data) {
-      data.push(pd.value)
-      categories.push(String(pd.year))
-    }
-
-    series.push({
+  const series: SeriesOptionsType[] = prefPopulation.map(
+    ({ prefName, data }) => ({
       type: 'line',
-      name: p.prefName,
-      data: data,
-    })
-  }
+      name: prefName,
+      data: data.map(({ value }) => value),
+    }),
+  )
+
+  const categories =
+    prefPopulation[0]?.data.map(({ year }) => String(year)) || []
 
   const options: Highcharts.Options = {
     title: {
@@ -35,14 +27,13 @@ const PopulationGraph: React.FC<Props> = ({ prefPopulation }) => {
       title: {
         text: '年度',
       },
-      categories: categories,
+      categories,
     },
     yAxis: {
       title: {
-        text: '人口数',
+        text: '都道府県別の総人口',
       },
     },
-    // 都道府県を一つも選んでいない場合との分岐条件
     series:
       series.length === 0
         ? [{ type: 'line', name: '都道府県名', data: [] }]
