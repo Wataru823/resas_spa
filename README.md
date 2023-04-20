@@ -1,5 +1,7 @@
 ## 都道府県別の総人口推移グラフ
 
+<img width="746" alt="image" src="https://user-images.githubusercontent.com/74819028/233226041-4b0034bf-c9ed-4ecd-b8a0-dd57c7d7fa6e.png">
+
 ### 環境
 
 - TypeScript + React
