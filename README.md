@@ -1,5 +1,7 @@
 ## 都道府県別の総人口推移グラフ
 
+https://population-by-prefecture-wataru823.netlify.app/
+
 <img width="746" alt="image" src="https://user-images.githubusercontent.com/74819028/233226041-4b0034bf-c9ed-4ecd-b8a0-dd57c7d7fa6e.png">
 
 ### 環境
@@ -18,7 +20,7 @@
 CSS
 
 - A Modern CSS Reset: リセット CSS に使用, 必要最低限のリセット CSS, ファイルサイズが小さいのが特徴
--
+- styled-components: css-in-js
 
 テスト
 
@@ -55,6 +57,14 @@ Prettier の方法
 
 ```
 yarn format
+```
+
+### テスト方法
+
+frontendディレクトリ直下で以下のコマンドを実行
+
+```
+npx playwright test
 ```
 
 ### 参考
